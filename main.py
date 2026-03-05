@@ -37,10 +37,10 @@ def tirar(num):
     return lista_tirada
 
 def jugador(lista_cat_usados1, puntajes1):
-    lista_cat = [1, 2, 3, 4, 5, 6, "E", "F", 'G', "P"]
     terminar = False
     lista_conservados = []
     contador = 0
+    puntos_ganados_este_turno = 0
     finalizar_turno = False
     while contador < 3:
         if finalizar_turno == False:
@@ -55,7 +55,6 @@ def jugador(lista_cat_usados1, puntajes1):
                 pun = "S"
             else:
                 pun = input("Desea finalizar: S/N ")
-            punt1 = 0
             if pun == "s" or pun == "S":
                 cat = input('Ingrese categoria seleccionada: ').upper()
                 cat2= input('Ingrese categoria a tachar, Enter para ignorar ').upper()
@@ -69,7 +68,7 @@ def jugador(lista_cat_usados1, puntajes1):
                             if contador == 0:
                                 print("Generala en primer turno")
                                 puntos_ganados_este_turno = 80
-                                terminar_juego_inmediato = True
+                                terminar  = True
                             else:
                                 puntos_ganados_este_turno = 50
                         elif cat == 'E': 
@@ -94,21 +93,29 @@ def jugador(lista_cat_usados1, puntajes1):
                 finalizar_turno = True
         contador += 1
     lista_cat_usados1,puntajes1=ordenar_custom(lista_cat_usados1,puntajes1)
-    print(f'El jugador puntuo {punt1}')
+    print(f'El jugador puntuo {puntos_ganados_este_turno}')
     return lista_cat_usados1, puntajes1, terminar
 
-def abrir_csv(categorias, puntajes1, puntajes2):
+def buscar_puntaje(categoria_buscada, categorias_jugador, puntajes_jugador):
+    for i in range(len(categorias_jugador)):
+        if categorias_jugador[i] == categoria_buscada:
+            return puntajes_jugador[i] # Si la encuentra, devuelve los puntos
+    return "" # Si el bucle termina y no la encontró, devuelve vacío
+
+def abrir_csv(categorias,cat1,puntajes1, cat2, puntajes2):
     try:
-        with open('partida_generala.csv', 'a', encoding='utf-8') as arch:
+        with open('partida_generala.csv', 'w', newline='', encoding='utf-8') as arch:
             escritor=csv.writer(arch)
             escritor.writerow(['categoria', 'j1','j2'])
-            for linea in range(len(categorias)):
-                escritor.writerow([categorias[linea],puntajes1[linea],puntajes2[linea]])
+            for cate in categorias:
+                p1=buscar_puntaje(cate,cat1,puntajes1)
+                p2=buscar_puntaje(cate,cat2,puntajes2)
+                escritor.writerow([cate,p1,p2])
     except FileNotFoundError:
         print('Archivo no encontrado')
 
 def juego():
-    todas_cats= ['1', '2', '3', '4', '5', '6', "E", "F", 'G', "P"]
+    todas_cats = ['1', '2', '3', '4', '5', '6', "E", "F", 'G', "P"]
     lista_cat_usados1 = []
     puntajes1 = []
     lista_cat_usados2 = []
@@ -132,7 +139,7 @@ def juego():
         if turno > 22:
             ganador(puntajes1,puntajes2)
             terminar = True
-    ##abrir_csv(lista_cat_usados1, puntajes1, puntajes2)
+        abrir_csv(todas_cats,lista_cat_usados1, puntajes1, lista_cat_usados2, puntajes2)
 
 
 juego()
