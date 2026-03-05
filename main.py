@@ -57,40 +57,37 @@ def jugador(lista_cat_usados1, puntajes1):
                 pun = input("Desea finalizar: S/N ")
             punt1 = 0
             if pun == "s" or pun == "S":
-                cat = input('Ingrese categoria seleccionada: ')
-                cat2= input('Ingrese categoria a tachar, Enter para ignorar ')
+                cat = input('Ingrese categoria seleccionada: ').upper()
+                cat2= input('Ingrese categoria a tachar, Enter para ignorar ').upper()
                 if cat not in lista_cat_usados1:
                     lista_cat_usados1.append(cat)
                     if cat.isdigit():
-                        cat_num=int(cat)
-                        if 1 <= cat_num <= 6:
-                            for num in lista_conservados:
-                                if num == cat_num:
-                                    punt1 += num
-                            puntajes1.append(punt1)
+                        cat_num = int(cat)
+                        puntos_ganados_este_turno = lista_conservados.count(cat_num) * cat_num
                     else:
                         if cat == 'G':
                             if contador == 0:
-                                puntajes1.append(80)
-                                finalizar_turno = True
-                                terminar=True
+                                print("Generala en primer turno")
+                                puntos_ganados_este_turno = 80
+                                terminar_juego_inmediato = True
                             else:
-                                puntajes1.append(50)
-                        elif cat == 'E':
-                            if contador == 0:
-                                puntajes1.append(25)
-                            else: 
-                                puntajes1.append(20)
-                        elif cat == 'F':
-                            if contador == 0:
-                                puntajes1.append(35)
-                            else: 
-                                puntajes1.append(30)
-                        elif cat == 'P':
-                            if contador == 0:
-                                puntajes1.append(45)
-                            else: 
-                                puntajes1.append(40)
+                                puntos_ganados_este_turno = 50
+                        elif cat == 'E': 
+                            if contador == 0: 
+                                puntos_ganados_este_turno = 25 
+                            else:
+                                puntos_ganados_este_turno = 20
+                        elif cat == 'F': 
+                            if contador == 0: 
+                                puntos_ganados_este_turno = 35 
+                            else:
+                                puntos_ganados_este_turno = 30
+                        elif cat == 'P':                             
+                            if contador == 0: 
+                                puntos_ganados_este_turno = 45 
+                            else:
+                                puntos_ganados_este_turno = 40
+                    puntajes1.append(puntos_ganados_este_turno)
                 if cat2:
                     lista_cat_usados1.append(cat2)
                     puntajes1.append(0)
@@ -111,6 +108,7 @@ def abrir_csv(categorias, puntajes1, puntajes2):
         print('Archivo no encontrado')
 
 def juego():
+    todas_cats= ['1', '2', '3', '4', '5', '6', "E", "F", 'G', "P"]
     lista_cat_usados1 = []
     puntajes1 = []
     lista_cat_usados2 = []
@@ -134,7 +132,7 @@ def juego():
         if turno > 22:
             ganador(puntajes1,puntajes2)
             terminar = True
-    abrir_csv(lista_cat_usados1, puntajes1, puntajes2)
+    ##abrir_csv(lista_cat_usados1, puntajes1, puntajes2)
 
 
 juego()
